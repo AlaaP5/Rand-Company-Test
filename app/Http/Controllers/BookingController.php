@@ -53,7 +53,7 @@ class BookingController extends Controller
                 return response()->json(['message' => 'Booking cancelled successfully'], 200);
             } else {
                 DB::rollBack();
-                return response()->json(['message' => 'The book is not found'], 404);
+                return response()->json(['message' => 'Booking not available for cancellation'], 400);
             }
 
         } catch (\Exception $e) {

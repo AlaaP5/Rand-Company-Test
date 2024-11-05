@@ -35,34 +35,29 @@ class BookingRepository implements BookingRepositoryInterface
     public function destroyBooking(int $id)
     {
 
-            $book = Booking::where('id', $id)
-                ->where('user_id', Auth::id())
-                ->first();
+        $book = Booking::where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
 
-            if (empty($book)) {
-                LogHelper::logWarning('cancel_booking', 'Booking not found for cancellation', [
-                    'booking_id' => $id,
-                    'user_id' => Auth::id(),
-                ]);
+        $dateNow = DateNow::presentTime(now());
+        $trip = Trip::findOrFail($book->trip_id);
 
-                return false;
-            }
 
-            $dateNow = DateNow::presentTime(now());
-            $trip = Trip::find($book->trip_id);
+        if ($trip->start_date <= $dateNow && $trip->end_date >= $dateNow) {
 
-            if ($trip->start_date > $dateNow || $trip->end_date < $dateNow) {
-                $book->delete();
+            $book->delete();
 
-                Event::dispatch(new CancelBookingEvent($trip, $book->seats_booked));
+            Event::dispatch(new CancelBookingEvent($trip, $book->seats_booked));
 
-                LogHelper::logInfo('cancel_booking', 'Booking cancelled successfully', [
-                    'user_id' => Auth::id(),
-                    'trip_id' => $book->trip_id,
-                    'seats_cancelled' => $book->seats_booked
-                ]);
+            LogHelper::logInfo('cancel_booking', 'Booking cancelled successfully', [
+                'user_id' => Auth::id(),
+                'trip_id' => $book->trip_id,
+                'seats_cancelled' => $book->seats_booked
+            ]);
 
-                return true;
-            }
+            return true;
+        }
+
+        return false;
     }
 }

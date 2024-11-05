@@ -8,7 +8,7 @@ use App\Interfaces\TripRepositoryInterface;
 
 class TripService
 {
-    protected $tripRepository;
+    protected TripRepositoryInterface $tripRepository;
     public function __construct(TripRepositoryInterface $tripRepository)
     {
         $this->tripRepository = $tripRepository;

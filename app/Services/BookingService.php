@@ -8,7 +8,7 @@ use App\Interfaces\BookingRepositoryInterface;
 
 class BookingService
 {
-    protected $bookingRepository;
+    protected BookingRepositoryInterface $bookingRepository;
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
         $this->bookingRepository = $bookingRepository;

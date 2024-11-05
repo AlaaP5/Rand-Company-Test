@@ -8,7 +8,7 @@ use App\Interfaces\AuthRepositoryInterface;
 
 class AuthService
 {
-    protected $authRepository;
+    protected AuthRepositoryInterface $authRepository;
 
     public function __construct(AuthRepositoryInterface $authRepository) {
         $this->authRepository = $authRepository;
