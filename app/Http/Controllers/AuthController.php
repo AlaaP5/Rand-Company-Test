@@ -7,10 +7,11 @@ use App\Http\Requests\AuthValidate;
 use App\Http\Requests\LoginValidate;
 use App\Http\Requests\VerificationValidate;
 use App\Services\AuthService;
-
+use App\Traits\ApiResponse;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
     protected AuthService $auth;
     public function __construct(AuthService $authService)
     {
@@ -22,10 +23,10 @@ class AuthController extends Controller
         try {
             $userDTO = UserDTO::fromArray($request->validated());
             $token = $this->auth->register($userDTO);
-            return response()->json(['token' => $token, 'message' => 'Code sent to your email'], 201);
+            return $this->successResponse($token, 'Code sent to your email', 201);
 
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
 
     }
@@ -36,13 +37,14 @@ class AuthController extends Controller
             $result = $this->auth->verification($request);
 
             if($result) {
-                return response()->json(['message' => 'Your account has been confirmed'], 200);
+                return $this->successResponse([], 'Your account has been confirmed', 200);
+
             } else {
-                return response()->json(['message' => 'your code is not correct'], 422);
+                return $this->badRequestResponse('your code is not correct');
             }
 
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
 
     }
@@ -52,14 +54,16 @@ class AuthController extends Controller
         try {
             $loginDTO = UserDTO::fromArray($request->validated());
             $token = $this->auth->login($loginDTO);
+
             if ($token) {
-                return response()->json(['token' => $token], 200);
+                return $this->successResponse($token, 'Login successful');
+
             } else {
-                return response()->json(['message' => 'Invalid login'], 422);
+                return $this->errorResponse('Unauthorized',401);
             }
 
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 401);
         }
     }
 
@@ -67,10 +71,10 @@ class AuthController extends Controller
     {
         try {
             $this->auth->logout();
-            return response()->json(['message' => 'logged out Successfully'], 200);
+            return $this->successResponse([], 'Logout successful');
 
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 }

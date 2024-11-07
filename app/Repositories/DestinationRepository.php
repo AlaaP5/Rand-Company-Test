@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Http\Resources\DestinationResource;
-use App\Http\Resources\TripResource;
 use App\Interfaces\DestinationRepositoryInterface;
 use App\Models\Destination;
 
@@ -14,7 +13,7 @@ class DestinationRepository implements DestinationRepositoryInterface
     public function indexOfDestination()
     {
         $destinations = Destination::paginate(10);
-        return $destinations;
+        return $this->transformDestinations($destinations);
     }
 
 
@@ -64,5 +63,22 @@ class DestinationRepository implements DestinationRepositoryInterface
             return false;
         }
         return $destination;
+    }
+
+
+    public function transformDestinations($destinations): array
+    {
+        return [
+            'data' => DestinationResource::collection($destinations->items()),
+            'pagination' => [
+                'total' => $destinations->total(),
+                'count' => $destinations->count(),
+                'per_page' => $destinations->perPage(),
+                'current_page' => $destinations->currentPage(),
+                'total_pages' => $destinations->lastPage(),
+                'next_page_url' => $destinations->nextPageUrl(),
+                'prev_page_url' => $destinations->previousPageUrl(),
+            ]
+        ];
     }
 }

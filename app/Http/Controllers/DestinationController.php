@@ -8,10 +8,11 @@ use App\Http\Requests\UpdateDestinationValidate;
 use App\Http\Resources\DestinationResource;
 use App\Http\Resources\TripResource;
 use App\Services\DestinationService;
-
+use App\Traits\ApiResponse;
 
 class DestinationController extends Controller
 {
+    use ApiResponse;
     protected DestinationService $destinationService;
 
     public function __construct(DestinationService $destinationService)
@@ -24,20 +25,9 @@ class DestinationController extends Controller
     {
         try {
             $destinations = $this->destinationService->indexOfDestination();
-
-            return response()->json([
-                'data' => DestinationResource::collection($destinations->items()),
-                'pagination' => [
-                    'current_page' => $destinations->currentPage(),
-                    'total_pages' => $destinations->lastPage(),
-                    'total_items' => $destinations->total(),
-                    'per_page' => $destinations->perPage(),
-                    'first_page_url' => $destinations->url(1),
-                    'last_page_url' => $destinations->url($destinations->lastPage())
-                ]
-            ], 200);
+            return $this->successResponse($destinations, 'operation  successful', 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -46,9 +36,9 @@ class DestinationController extends Controller
         try {
             $destinationDTO = DestinationDTO::fromArray($request->validated());
             $this->destinationService->createDestination($destinationDTO);
-            return response()->json(['message' => 'Destination created successfully'], 201);
+            return $this->successResponse([], 'Destination created successfully', 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -56,9 +46,9 @@ class DestinationController extends Controller
     {
         try {
             $destination = $this->destinationService->showDestination($id);
-            return response()->json(['data' => new DestinationResource($destination)], 200);
+            return $this->successResponse(new DestinationResource($destination), 'Operation successful', 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -67,9 +57,9 @@ class DestinationController extends Controller
         try {
             $destinationDTO = DestinationDTO::fromArray($request->validated());
             $destination = $this->destinationService->updateDestination($destinationDTO);
-            return response()->json(['data' => new DestinationResource($destination)], 200);
+            return $this->successResponse(new DestinationResource($destination), 'Updated successful', 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -78,12 +68,12 @@ class DestinationController extends Controller
         try {
             $result = $this->destinationService->destroyDestination($id);
             if ($result) {
-                return response()->json(['message' => 'Destination deleted successfully'], 201);
+                return $this->successResponse([], 'Destination deleted successfully', 200);
             } else {
-                return response()->json(['message' => 'Can not delete This destination because has trips'], 403);
+                return $this->forbiddenResponse('Can not delete This destination because has trips');
             }
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -93,12 +83,12 @@ class DestinationController extends Controller
             $destination = $this->destinationService->tripsOfDestination($id);
 
             if ($destination) {
-                return response()->json(['data' => TripResource::collection($destination->trips)], 200);
+                return $this->successResponse(TripResource::collection($destination->trips), 'Operation successful, 200');
             } else {
-                return response()->json(['data' => 'not found trips'], 404);
+                return $this->errorResponse('not found trips', 404);
             }
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 }

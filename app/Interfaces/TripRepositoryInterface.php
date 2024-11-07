@@ -10,5 +10,4 @@ interface TripRepositoryInterface
     public function showTrip(int $id);
     public function updateTrip(array $request);
     public function destroyTrip(int $id);
-    public function transformTrips(array $request);
 }

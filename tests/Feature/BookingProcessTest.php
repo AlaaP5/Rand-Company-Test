@@ -47,7 +47,7 @@ class BookingProcessTest extends TestCase
 
         $updatedTrip = $trip->fresh();
 
-        $this->assertEquals(1, $updatedTrip->available_seats);
+        $this->assertEquals(0, $updatedTrip->available_seats);
 
         $this->assertEquals('full', $updatedTrip->statusTrip);
     }

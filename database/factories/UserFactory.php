@@ -23,7 +23,6 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('12121212'),
-            'date' => fake()->date(),
             'role' => 'user',
             'statusCode' => true,
             'remember_token' => Str::random(10),

@@ -36,6 +36,7 @@ Route::middleware('auth:api','throttle:60,1')->group(function () {
     Route::get('trip/index', [TripController::class, 'indexOfTrip']);
     Route::get('destination/index', [DestinationController::class, 'indexOfDestination']);
 
+    Route::get('destination/trips/{id}',[DestinationController::class, 'tripsOfDestination']);
 
     Route::middleware('check_Admin')->group(function () {
 
@@ -44,7 +45,7 @@ Route::middleware('auth:api','throttle:60,1')->group(function () {
             Route::get('show/{id}', [DestinationController::class, 'showDestination']);
             Route::post('update', [DestinationController::class, 'updateDestination']);
             Route::delete('destroy/{id}', [DestinationController::class, 'destroyDestination']);
-            Route::get('trips/{id}',[DestinationController::class, 'tripsOfDestination']);
+
         });
 
         Route::prefix('trip')->group(function () {

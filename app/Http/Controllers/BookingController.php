@@ -6,11 +6,14 @@ use App\DTOs\BookingDTO;
 use App\Helpers\LogHelper;
 use App\Http\Requests\BookingValidate;
 use App\Services\BookingService;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
+    use ApiResponse;
+
     protected BookingService $bookingService;
 
     public function __construct(BookingService $bookingService)
@@ -27,7 +30,8 @@ class BookingController extends Controller
             $this->bookingService->createBooking($bookingDTO);
 
             DB::commit();
-            return response()->json(['message' => 'The Booking is added Successfully'], 201);
+
+            return $this->successResponse([], 'The Booking is added Successfully', 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -37,7 +41,7 @@ class BookingController extends Controller
                 'error_message' => $e->getMessage(),
                 'input_data' => $request->all()
             ]);
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
 
     }
@@ -50,10 +54,11 @@ class BookingController extends Controller
 
             if($result) {
                 DB::commit();
-                return response()->json(['message' => 'Booking cancelled successfully'], 200);
+                return $this->successResponse([], 'Booking cancelled successfully', 200);
+
             } else {
                 DB::rollBack();
-                return response()->json(['message' => 'Booking not available for cancellation'], 400);
+                return $this->badRequestResponse('Booking not available for cancellation', 400);
             }
 
         } catch (\Exception $e) {
@@ -65,7 +70,7 @@ class BookingController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            return response()->json(['message' => $e->getMessage()], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 }
