@@ -12,29 +12,28 @@ use App\Traits\ApiResponse;
 class AuthController extends Controller
 {
     use ApiResponse;
-    protected AuthService $auth;
-    public function __construct(AuthService $authService)
-    {
-        $this->auth = $authService;
-    }
+    public function __construct(protected AuthService $authService) {}
 
     public function register(AuthValidate $request)
     {
         try {
             $userDTO = UserDTO::fromArray($request->validated());
-            $token = $this->auth->register($userDTO);
+
+            $token = $this->authService->register($userDTO);
+
             return $this->successResponse($token, 'Code sent to your email', 201);
 
         } catch (\Exception $e) {
+
             return $this->errorResponse($e->getMessage(), 500);
         }
-
     }
+
 
     public function verification(VerificationValidate $request)
     {
         try {
-            $result = $this->auth->verification($request);
+            $result = $this->authService->verification($request);
 
             if($result) {
                 return $this->successResponse([], 'Your account has been confirmed', 200);
@@ -49,14 +48,18 @@ class AuthController extends Controller
 
     }
 
+
     public function login(LoginValidate $request)
     {
         try {
             $loginDTO = UserDTO::fromArray($request->validated());
-            $token = $this->auth->login($loginDTO);
+            $token = $this->authService->login($loginDTO);
 
             if ($token) {
                 return $this->successResponse($token, 'Login successful');
+
+            } else if(is_null($token)) {
+                return $this->forbiddenResponse('يرجى تسجيل الكود المرسل على الايميل الخاص بك');
 
             } else {
                 return $this->errorResponse('Unauthorized',401);
@@ -70,7 +73,7 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            $this->auth->logout();
+            $this->authService->logout();
             return $this->successResponse([], 'Logout successful');
 
         } catch (\Exception $e) {

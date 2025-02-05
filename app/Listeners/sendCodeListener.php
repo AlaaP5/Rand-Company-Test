@@ -4,18 +4,14 @@ namespace App\Listeners;
 
 use App\Events\CreateUserEvent;
 use App\Services\AuthService;
-use App\Services\VerificationCodeService;
+
 
 class sendCodeListener
 {
     /**
      * Create the event listener.
      */
-    protected $auth;
-    public function __construct(AuthService $auth = null)
-    {
-        $this->auth = $auth;
-    }
+    public function __construct(protected AuthService $auth) {}
 
     /**
      * Handle the event.

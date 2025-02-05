@@ -17,11 +17,7 @@ class TripController extends Controller
 {
     use ApiResponse;
 
-    protected TripService $tripService;
-    public function __construct(TripService $tripService)
-    {
-        $this->tripService = $tripService;
-    }
+    public function __construct(protected TripService $tripService) {}
 
 
     public function indexOfTrip(FilterTripValidate $request)

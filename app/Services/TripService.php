@@ -8,11 +8,7 @@ use App\Interfaces\TripRepositoryInterface;
 
 class TripService
 {
-    protected TripRepositoryInterface $tripRepository;
-    public function __construct(TripRepositoryInterface $tripRepository)
-    {
-        $this->tripRepository = $tripRepository;
-    }
+    public function __construct(protected TripRepositoryInterface $tripRepository) {}
 
 
     public function indexOfTrip(FilterTripDTO $tripDTO)

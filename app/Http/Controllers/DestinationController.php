@@ -13,12 +13,8 @@ use App\Traits\ApiResponse;
 class DestinationController extends Controller
 {
     use ApiResponse;
-    protected DestinationService $destinationService;
 
-    public function __construct(DestinationService $destinationService)
-    {
-        $this->destinationService = $destinationService;
-    }
+    public function __construct(protected DestinationService $destinationService) {}
 
 
     public function indexOfDestination()

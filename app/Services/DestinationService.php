@@ -7,12 +7,8 @@ use App\Interfaces\DestinationRepositoryInterface;
 
 class DestinationService
 {
-    protected DestinationRepositoryInterface $destinationRepository;
 
-    public function __construct(DestinationRepositoryInterface $destinationRepository)
-    {
-        $this->destinationRepository = $destinationRepository;
-    }
+    public function __construct(protected DestinationRepositoryInterface $destinationRepository) {}
 
     public function indexOfDestination()
     {
