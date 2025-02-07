@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\Domain;
 
 
-interface TripRepositoryInterface
+interface ITripRepository
 {
     public function indexOfTrip(array $request);
     public function createTrip(array $request);

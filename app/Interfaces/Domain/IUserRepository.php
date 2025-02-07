@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\Domain;
 
 
-interface AuthRepositoryInterface
+interface IUserRepository
 {
     public function create_user(array $request);
     public function get_user_by_id();

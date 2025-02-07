@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\Domain;
 
-interface BookingRepositoryInterface
+interface IBookingRepository
 {
     public function createBooking(array $request);
     public function destroyBooking(int $id);

@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Domain;
 
 use App\Events\AddBookingEvent;
 use App\Events\CancelBookingEvent;
 use App\Helpers\DateNow;
 use App\Helpers\LogHelper;
-use App\Interfaces\BookingRepositoryInterface;
+use App\Interfaces\Domain\IBookingRepository;
 use App\Models\Booking;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 
-class BookingRepository implements BookingRepositoryInterface
+class BookingRepository implements IBookingRepository
 {
 
     public function createBooking(array $input)

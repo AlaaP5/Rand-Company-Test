@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Domain;
 
 use App\Enums\TripCases;
 use App\Helpers\DateNow;
 use App\Helpers\LogHelper;
 use App\Http\Resources\TripResource;
-use App\Interfaces\TripRepositoryInterface;
+use App\Interfaces\Domain\ITripRepository;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
-class TripRepository implements TripRepositoryInterface
+class TripRepository implements ITripRepository
 {
 
     public function indexOfTrip(array $input)

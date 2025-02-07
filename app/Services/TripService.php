@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\DTOs\FilterTripDTO;
 use App\DTOs\TripDTO;
-use App\Interfaces\TripRepositoryInterface;
+use App\Interfaces\Domain\ITripRepository;
 
 class TripService
 {
-    public function __construct(protected TripRepositoryInterface $tripRepository) {}
+    public function __construct(protected ITripRepository $tripRepository) {}
 
 
     public function indexOfTrip(FilterTripDTO $tripDTO)

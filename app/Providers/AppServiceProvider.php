@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-
-use App\Interfaces\AuthRepositoryInterface;
-use App\Interfaces\BookingRepositoryInterface;
-use App\Interfaces\DestinationRepositoryInterface;
-use App\Interfaces\TripRepositoryInterface;
-use App\Repositories\AuthRepository;
-use App\Repositories\BookingRepository;
-use App\Repositories\DestinationRepository;
-use App\Repositories\TripRepository;
+use App\Interfaces\Application\IUserManagementRepository;
+use App\Interfaces\Domain\IUserRepository;
+use App\Interfaces\Domain\IBookingRepository;
+use App\Interfaces\Domain\IDestinationRepository;
+use App\Interfaces\Domain\ITripRepository;
+use App\Repositories\Application\UserManagementRepository;
+use App\Repositories\Domain\UserRepository;
+use App\Repositories\Domain\BookingRepository;
+use App\Repositories\Domain\DestinationRepository;
+use App\Repositories\Domain\TripRepository;
 
 ;
 
@@ -23,10 +24,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
-        $this->app->bind(TripRepositoryInterface::class, TripRepository::class);
-        $this->app->bind(DestinationRepositoryInterface::class, DestinationRepository::class);
-        $this->app->bind(BookingRepositoryInterface::class, BookingRepository::class);
+        $this->app->bind(IUserRepository::class, UserRepository::class);
+        $this->app->bind(ITripRepository::class, TripRepository::class);
+        $this->app->bind(IDestinationRepository::class, DestinationRepository::class);
+        $this->app->bind(IBookingRepository::class, BookingRepository::class);
+
+        $this->app->bind(IUserManagementRepository::class, UserManagementRepository::class);
+        
     }
 
     /**

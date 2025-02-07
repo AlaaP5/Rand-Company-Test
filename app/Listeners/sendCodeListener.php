@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CreateUserEvent;
-use App\Services\AuthService;
+use App\Interfaces\Application\IUserManagementRepository;
 
 
 class sendCodeListener
@@ -11,7 +11,7 @@ class sendCodeListener
     /**
      * Create the event listener.
      */
-    public function __construct(protected AuthService $auth) {}
+    public function __construct(protected IUserManagementRepository $auth) {}
 
     /**
      * Handle the event.

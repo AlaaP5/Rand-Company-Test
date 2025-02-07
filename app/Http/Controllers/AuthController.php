@@ -3,25 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\UserDTO;
+use App\Enums\AuthCases;
 use App\Http\Requests\AuthValidate;
 use App\Http\Requests\LoginValidate;
 use App\Http\Requests\VerificationValidate;
-use App\Services\AuthService;
+use App\Interfaces\Application\IUserManagementRepository;
 use App\Traits\ApiResponse;
+
 
 class AuthController extends Controller
 {
     use ApiResponse;
-    public function __construct(protected AuthService $authService) {}
+    public function __construct(protected IUserManagementRepository $UserManagementRepository) {}
 
     public function register(AuthValidate $request)
     {
         try {
             $userDTO = UserDTO::fromArray($request->validated());
 
-            $token = $this->authService->register($userDTO);
+            $token = $this->UserManagementRepository->register($userDTO);
 
-            return $this->successResponse($token, 'Code sent to your email', 201);
+            return $this->successResponse($token, AuthCases::Register_success->value, 201);
 
         } catch (\Exception $e) {
 
@@ -33,13 +35,13 @@ class AuthController extends Controller
     public function verification(VerificationValidate $request)
     {
         try {
-            $result = $this->authService->verification($request);
+            $result = $this->UserManagementRepository->verification($request);
 
             if($result) {
-                return $this->successResponse([], 'Your account has been confirmed', 200);
+                return $this->successResponse([], AuthCases::verification_success->value, 200);
 
             } else {
-                return $this->badRequestResponse('your code is not correct');
+                return $this->badRequestResponse(AuthCases::verification_failed->value);
             }
 
         } catch (\Exception $e) {
@@ -53,16 +55,16 @@ class AuthController extends Controller
     {
         try {
             $loginDTO = UserDTO::fromArray($request->validated());
-            $token = $this->authService->login($loginDTO);
+            $token = $this->UserManagementRepository->login($loginDTO);
 
             if ($token) {
-                return $this->successResponse($token, 'Login successful');
+                return $this->successResponse($token, AuthCases::Login_success->value);
 
             } else if(is_null($token)) {
-                return $this->forbiddenResponse('يرجى تسجيل الكود المرسل على الايميل الخاص بك');
+                return $this->forbiddenResponse(AuthCases::Forbidden_message->value);
 
             } else {
-                return $this->errorResponse('Unauthorized',401);
+                return $this->errorResponse(AuthCases::Failed->value, 401);
             }
 
         } catch (\Exception $e) {
@@ -70,11 +72,12 @@ class AuthController extends Controller
         }
     }
 
+
     public function logout()
     {
         try {
-            $this->authService->logout();
-            return $this->successResponse([], 'Logout successful');
+            $this->UserManagementRepository->logout();
+            return $this->successResponse([], AuthCases::Logout_success->value);
 
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);

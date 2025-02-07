@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Domain;
 
-use App\Http\Resources\DestinationResource;
-use App\Interfaces\DestinationRepositoryInterface;
+use App\Interfaces\Domain\IDestinationRepository;
 use App\Models\Destination;
 
 
-class DestinationRepository implements DestinationRepositoryInterface
+class DestinationRepository implements IDestinationRepository
 {
 
-    public function indexOfDestination()
+    public function get_all_destinations()
     {
         $destinations = Destination::paginate(10);
-        return $this->transformDestinations($destinations);
+        return $destinations;
     }
 
 
     public function createDestination(array $data)
     {
         $destination = Destination::create($data);
-        return true;
+        return $destination;
     }
 
 
@@ -63,22 +62,5 @@ class DestinationRepository implements DestinationRepositoryInterface
             return false;
         }
         return $destination;
-    }
-
-
-    public function transformDestinations($destinations): array
-    {
-        return [
-            'data' => DestinationResource::collection($destinations->items()),
-            'pagination' => [
-                'total' => $destinations->total(),
-                'count' => $destinations->count(),
-                'per_page' => $destinations->perPage(),
-                'current_page' => $destinations->currentPage(),
-                'total_pages' => $destinations->lastPage(),
-                'next_page_url' => $destinations->nextPageUrl(),
-                'prev_page_url' => $destinations->previousPageUrl(),
-            ]
-        ];
     }
 }

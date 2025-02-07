@@ -3,16 +3,26 @@
 namespace App\Services;
 
 use App\DTOs\DestinationDTO;
-use App\Interfaces\DestinationRepositoryInterface;
+use App\Http\Resources\DestinationResource;
+use App\Interfaces\Domain\IDestinationRepository;
+use App\Traits\ApiResponse;
 
 class DestinationService
 {
 
-    public function __construct(protected DestinationRepositoryInterface $destinationRepository) {}
+    public function __construct(protected IDestinationRepository $destinationRepository) {}
+
+    use ApiResponse;
 
     public function indexOfDestination()
     {
-        return $this->destinationRepository->indexOfDestination();
+        $destinations = $this->destinationRepository->get_all_destinations();
+
+        if(count($destinations)) {
+
+            $data = DestinationResource::collection($destinations);
+            return $this->transformation($data);
+        }
     }
 
     public function createDestination(DestinationDTO $destinationDTO)

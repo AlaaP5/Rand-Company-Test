@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\Domain;
 
-interface DestinationRepositoryInterface
+interface IDestinationRepository
 {
-    public function indexOfDestination();
+    public function get_all_destinations();
     public function createDestination(array $request);
     public function showDestination(int $id);
     public function updateDestination(array $request);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\DestinationDTO;
+use App\Enums\AuthCases;
 use App\Http\Requests\DestinationValidate;
 use App\Http\Requests\UpdateDestinationValidate;
 use App\Http\Resources\DestinationResource;
@@ -21,7 +22,8 @@ class DestinationController extends Controller
     {
         try {
             $destinations = $this->destinationService->indexOfDestination();
-            return $this->successResponse($destinations, 'operation  successful', 200);
+            return $this->successResponse($destinations, AuthCases::Get_destinations_success->value, 200);
+
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Domain;
 
-use App\Interfaces\AuthRepositoryInterface;
+use App\Enums\AuthCases;
+use App\Interfaces\Domain\IUserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-class AuthRepository implements AuthRepositoryInterface
+class UserRepository implements IUserRepository
 {
 
     public function create_user(array $input)
@@ -28,7 +29,7 @@ class AuthRepository implements AuthRepositoryInterface
 
     public function update_user_by_email($email, $code, $status)
     {
-            $user = User::where('email', $email)->first();
+            $user = User::where(AuthCases::Email->value, $email)->first();
 
             $user->code = is_null($code) ? $user->code : $code;
             $user->statusCode = $status;
@@ -38,12 +39,9 @@ class AuthRepository implements AuthRepositoryInterface
     }
 
 
-
-
-
     public function get_user_by_email($email)
     {
-        $user = User::where('email', $email)->first();
+        $user = User::where(AuthCases::Email->value, $email)->first();
 
         return $user;
     }

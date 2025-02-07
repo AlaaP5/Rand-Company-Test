@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\DTOs\BookingDTO;
-use App\Interfaces\BookingRepositoryInterface;
+use App\Interfaces\Domain\IBookingRepository;
 
 
 class BookingService
 {
-    public function __construct(protected BookingRepositoryInterface $bookingRepository) {}
+    public function __construct(protected IBookingRepository $bookingRepository) {}
 
 
     public function createBooking(BookingDTO $bookingDTO)

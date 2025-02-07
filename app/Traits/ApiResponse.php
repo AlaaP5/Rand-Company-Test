@@ -24,6 +24,7 @@ trait ApiResponse
             'message' => $message,
         ], $statusCode);
     }
+
     protected function badRequestResponse(string $message, int $statusCode = 400): JsonResponse
     {
         return response()->json([
@@ -32,6 +33,7 @@ trait ApiResponse
             'message' => $message,
         ], $statusCode);
     }
+
     protected function forbiddenResponse(string $message = 'Forbidden', int $statusCode = 403): JsonResponse
     {
         return response()->json([
@@ -40,4 +42,21 @@ trait ApiResponse
             'message' => $message,
         ], $statusCode);
     }
+
+    protected function transformation($data): array
+    {
+        return [
+            'data' => $data->items(),
+            'pagination' => [
+                'total' => $data->total(),
+                'count' => $data->count(),
+                'per_page' => $data->perPage(),
+                'current_page' => $data->currentPage(),
+                'total_pages' => $data->lastPage(),
+                'next_page_url' => $data->nextPageUrl(),
+                'prev_page_url' => $data->previousPageUrl(),
+            ]
+        ];
+    }
+
 }
